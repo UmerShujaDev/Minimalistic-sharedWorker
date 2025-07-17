@@ -12,7 +12,6 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6dHJ1ZSwiaWF0Ijox
 function App() {
   const [socketState, setSocketState] = useState("disconnected");
   const [socketId, setSocketId] = useState("");
-  const [message, setMessage] = useState("");
 
    const handleSocketEvents = (event) => {
     debugger;
@@ -22,8 +21,8 @@ function App() {
       setSocketId(event.id);
     } else if(event.type === "message") {
       const { user, data } = event.payload 
-      setMessage(`${user.tenant_name} - ${data.time}`);
-    } else if(event.type == "scan_result") {
+      console.log("user, data", user, data);
+    } else if(event.type === "scan_result") {
       console.log("🚀 ~ handleSocketEvents ~ event:", event)
     }
   };
@@ -31,7 +30,6 @@ function App() {
   useEffect(() => {
     initSharedWorker();
     onSocketEvent(handleSocketEvents);
-    connectSocket(token)
   }, []);
 
   return (
@@ -39,7 +37,6 @@ function App() {
       <h2>🔗 SharedWorker Socket.IO Demo</h2>
       <p>Status: <strong>{socketState}</strong></p>
       <p>Socket ID: <code>{socketId}</code></p>
-      <p>Tenant: {message}</p>
 
       <button onClick={() => connectSocket(token)} disabled={socketState === "connected"}>
         🔌 Connect Socket
