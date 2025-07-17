@@ -1,5 +1,5 @@
 let socket = null;
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6dHJ1ZSwiaWF0IjoxNzUyNjUzNTQzLCJqdGkiOiI2MGJhYzNlMC00YzE0LTRhZTEtYTRlNy01OTJhYWRmOTljMTkiLCJ0eXBlIjoiYWNjZXNzIiwic3ViIjp7InVzZXIiOnsiaWQiOjEwMywidWlkIjoxLCJsb2dpbiI6Im93bmVyIiwic3RhbXAiOiI5NWZlYWFmNmQwMmY0MWQ1YmNhYmRkNzAyMTY3MWVmYSIsInRlbmFudF9pZCI6NywidGVuYW50X25hbWUiOiJvd25lciIsIm1vZGlmaWVkX29uIjoiMjAyNC0xMC0yNFQxODoxMzozMy4wNDM2OTQrMDA6MDAiLCJkYXRhIjpudWxsLCJleHBpcmVzX2F0IjpudWxsfSwiZGF0YSI6ImZHalNRM01Lc2dtUFFNT3ZvMVlWVE0xUzF4RXVkZzVBVWloNm9Qajh2Mm89IiwicHJvZmlsZSI6eyJpZCI6MSwidXNlcm5hbWUiOiJzd2lmdHdzIiwiZmlyc3RfbmFtZSI6IkFBTUlSIiwibGFzdF9uYW1lIjoiUkVUSVdBTExBIiwiYXNzaWduX2N1c3RvbWVyIjpmYWxzZSwibWFzdGVyX2FkbWluIjp0cnVlLCJzdGF0dXMiOjEsInN0YW1wIjoiNDdkMmY0N2RlOWE1NGYyOTg4ODMzNmViZTIxZDdlYWIiLCJpbWFnZSI6Imh0dHBzOi8va2h1Yi1hcHAuczMtYWNjZWxlcmF0ZS5hbWF6b25hd3MuY29tL21lZGlhL3Byb2QvMzcvdGVuYW50LXVzZXJzL2ltYWdlcy8wMTFkZDJjMy03ZTQwLTRhNDItOTM3NC0zY2ZmMDgwNTM4ZmYiLCJwaG9uZV9ubyI6IisxICg4NzcpIDI5MC0yNjA5IiwicmVzZXRfa2V5IjpudWxsLCJwZXJtaXNzaW9ucyI6W119fSwibmJmIjoxNzUyNjUzNTQzLCJleHAiOjE3NTI3Mzk5NDN9.1hoOEWlvTA-eomFzIKVK2dDzrfhNPwTgd2H9cELvs9o"
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6dHJ1ZSwiaWF0IjoxNzUyNzU4MjU5LCJqdGkiOiJiMjU5ZWRkMi0xMDgwLTQzMDUtYmU1MS1jOWZmNjUxNTQ2ODciLCJ0eXBlIjoiYWNjZXNzIiwic3ViIjp7InVzZXIiOnsiaWQiOjEsInVpZCI6MTIsImxvZ2luIjoicHJlcHJvZCIsInN0YW1wIjoiOGYxZGNmYzZkNWVmNGVlNzllZjVkNzJkMzc5NzhkM2QiLCJ0ZW5hbnRfaWQiOjEsInRlbmFudF9uYW1lIjoicHJlcHJvZCIsIm1vZGlmaWVkX29uIjoiMjAyNC0wMi0yOVQxOToxMzozMy4xNzgzOTErMDA6MDAiLCJkYXRhIjpudWxsLCJleHBpcmVzX2F0IjpudWxsfSwiZGF0YSI6IkJ3Tjhhb3dwVk5Bd3NXM2VENlRic3I3MklNYittaHRTZDE0OEZMTStsNlE9IiwicHJvZmlsZSI6eyJpZCI6MTIsInVzZXJuYW1lIjoicHJlcHJvZCIsImZpcnN0X25hbWUiOiJQUkVQUk9EIiwibGFzdF9uYW1lIjoiQm90IiwiYXNzaWduX2N1c3RvbWVyIjpmYWxzZSwibWFzdGVyX2FkbWluIjp0cnVlLCJzdGF0dXMiOjEsInN0YW1wIjoiNTJiMTk0ZmQxNGJmNDI3Mzg1NjA1NWNmNmQwMWQwN2UiLCJpbWFnZSI6Imh0dHBzOi8va2h1Yi1hcHAtZGV2LnMzLWFjY2VsZXJhdGUuYW1hem9uYXdzLmNvbS9tZWRpYS9wcmVwcm9kLzEvdGVuYW50LXVzZXJzL2ltYWdlcy9jNzQ2ZjI5MS0wY2I3LTQ1ZjgtYThkOC1kMzE0NDlhMjIxMjAiLCJwaG9uZV9ubyI6Iis0MjEgKDQxMikgOTQxLTIwNCIsInJlc2V0X2tleSI6bnVsbCwicGVybWlzc2lvbnMiOlsxMzAsMTMxLDEwLDE0MCwxMiwxNDIsMjAsMjIsMTUwLDE1MiwzMCwzMiwxNjAsNDAsNDIsMTcwLDE3MSw1MCw1Miw2MCw2Miw3MCw3Miw4MCw4Miw5MCw5MiwxMDAsMTAyLDExMCwxMTIsMTIwLDEyMl19fSwibmJmIjoxNzUyNzU4MjU5LCJleHAiOjE3NTI4NDQ2NTl9.GenuIGjGhXIlTljxTNnveuAw9mC8DXNawdIaU_jgUnY"
 const clients = [];
 
 function broadcast(message) {
@@ -27,7 +27,7 @@ onconnect = function (e) {
 
         importScripts("https://cdn.socket.io/4.7.2/socket.io.min.js");
 
-        socket = io("wss://stage.ikhub.biz", {
+        socket = io("wss://preprod.ikhub.biz", {
             transports: ["websocket"],
             query: { token },
             autoConnect: true,
@@ -59,6 +59,14 @@ onconnect = function (e) {
         socket.on("pong", (data) => {
           broadcast({ type: "message", payload: data });
         });
+
+        // Auto ping every 10 seconds
+        setInterval(() => {
+          if (socket && socket.connected) {
+            socket.emit("ping", { time: new Date().toISOString() });
+            console.log("🔁 Auto-ping sent");
+          }
+        }, 10000); // every 10 seconds
 
         break;
 
