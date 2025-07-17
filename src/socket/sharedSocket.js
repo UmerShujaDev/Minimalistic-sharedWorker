@@ -9,7 +9,6 @@ export function initSharedWorker() {
 
     worker.port.onmessage = (event) => {
       const data = event.data;
-        debugger;
 
         if (data.type === "WSState") {
             // Update connection status in UI
@@ -18,6 +17,10 @@ export function initSharedWorker() {
 
         if (data.type === "message") {
             listeners.forEach((cb) => cb(data));
+        }
+
+        if (data.type === "scan_result") {
+            listeners.forEach((cb) => cb(data))
         }
     };
   }

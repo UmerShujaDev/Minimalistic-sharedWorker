@@ -23,12 +23,15 @@ function App() {
     } else if(event.type === "message") {
       const { user, data } = event.payload 
       setMessage(`${user.tenant_name} - ${data.time}`);
+    } else if(event.type == "scan_result") {
+      console.log("🚀 ~ handleSocketEvents ~ event:", event)
     }
   };
 
   useEffect(() => {
     initSharedWorker();
     onSocketEvent(handleSocketEvents);
+    connectSocket(token)
   }, []);
 
   return (
@@ -36,7 +39,7 @@ function App() {
       <h2>🔗 SharedWorker Socket.IO Demo</h2>
       <p>Status: <strong>{socketState}</strong></p>
       <p>Socket ID: <code>{socketId}</code></p>
-      <p>Message: {message}</p>
+      <p>Tenant: {message}</p>
 
       <button onClick={() => connectSocket(token)} disabled={socketState === "connected"}>
         🔌 Connect Socket
@@ -45,7 +48,7 @@ function App() {
       <button onClick={() => disconnectSocket()} disabled={socketState !== "connected"}>
         ❌ Disconnect Socket
       </button>
-
+      
       <button onClick={() => sendMessage({ time: new Date().toISOString() })} disabled={socketState !== "connected"}>
         📨 Send Message
       </button>

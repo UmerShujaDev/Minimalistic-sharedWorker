@@ -52,6 +52,10 @@ onconnect = function (e) {
           broadcast({ type: "WSState", state: "error", error: err.message });
         });
 
+        socket.on("scan_result", (data) => {
+          broadcast({ type: "scan_result", state: "result", data });
+        });
+
         socket.on("pong", (data) => {
           broadcast({ type: "message", payload: data });
         });
