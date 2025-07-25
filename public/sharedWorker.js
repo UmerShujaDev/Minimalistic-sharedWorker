@@ -27,7 +27,7 @@ onconnect = function (e) {
 
         importScripts("https://cdn.socket.io/4.7.2/socket.io.min.js");
 
-        socket = io("wss://preprod.ikhub.biz", {
+        socket = io("wss://YOUR_URL", {
           transports: ["websocket"],
           query: { token },
           autoConnect: true,
