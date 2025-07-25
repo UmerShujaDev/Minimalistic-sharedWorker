@@ -1,7 +1,7 @@
 let socket = null;
-const token = ""
+const token = "YOUR_TOKEN"
 const clients = [];
-
+let pingInterval = null;
 function broadcast(message) {
   clients.forEach((port) => port.postMessage(message));
 }
@@ -28,13 +28,13 @@ onconnect = function (e) {
         importScripts("https://cdn.socket.io/4.7.2/socket.io.min.js");
 
         socket = io("wss://preprod.ikhub.biz", {
-            transports: ["websocket"],
-            query: { token },
-            autoConnect: true,
-            reconnection: true,
-            reconnectionAttempts: 3,
-            reconnectionDelay: 2000,
-            timeout: 20000,
+          transports: ["websocket"],
+          query: { token },
+          autoConnect: true,
+          reconnection: true,
+          reconnectionAttempts: 3,
+          reconnectionDelay: 2000,
+          timeout: 20000,
         });
 
         socket.on("connect", () => {
@@ -45,6 +45,7 @@ onconnect = function (e) {
         socket.on("disconnect", () => {
           console.log("🔌 Socket disconnected");
           broadcast({ type: "WSState", state: "disconnected" });
+          socket.disconnect()
         });
 
         socket.on("connect_error", (err) => {
@@ -56,33 +57,53 @@ onconnect = function (e) {
           broadcast({ type: "scan_result", state: "result", data });
         });
 
+        socket.on("user_joined", (data) => {
+          broadcast({ type: "user_joined", state: "user_joined", data });
+        });
+
         socket.on("pong", (data) => {
           broadcast({ type: "message", payload: data });
         });
-
-        // Auto ping every 10 seconds
-        setInterval(() => {
-          if (socket && socket.connected) {
-            socket.emit("ping", { time: new Date().toISOString() });
-            console.log("🔁 Auto-ping sent");
-          }
-        }, 10000); // every 10 seconds
 
         break;
 
       case "disconnect":
         if (socket) {
-            console.log("❌ Disconnecting socket...");
-            socket.disconnect();
-            socket = null;
-            broadcast({ type: "WSState", state: "disconnected" });
-            broadcast({ type: "socketId", id: null });
+          console.log("❌ Disconnecting socket...");
+          socket.disconnect();
+          socket = null;
+          broadcast({ type: "WSState", state: "disconnected" });
+          broadcast({ type: "socketId", id: null });
+        }
+        break;
+
+      case "join_room":
+        if (socket && socket.connected && payload?.room_id) {
+          socket.emit("join_room", payload);
+        }
+        break;
+
+      case "ping":
+        if (socket && socket.connected) {
+          if (pingInterval) {
+            clearInterval(pingInterval);
+          }
+
+          // ✅ Start fresh ping interval
+          pingInterval = setInterval(() => {
+            if (socket && socket.connected) {
+              socket.emit("ping", { time: new Date().toISOString() });
+              console.log("🔁 Auto-ping sent");
+            }
+          }, 10000);
+          console.log("📤 Sent ping:", payload);
+        } else {
+          console.warn("⚠️ Can't send ping, socket not connected.");
         }
         break;
 
       case "sendMessage":
         if (socket && socket.connected) {
-          socket.emit("ping", payload);
           console.log("📤 Sent ping:", payload);
         } else {
           console.warn("⚠️ Can't send, socket not connected.");

@@ -19,6 +19,10 @@ export function initSharedWorker() {
             listeners.forEach((cb) => cb(data));
         }
 
+        if (data.type === "user_joined") {
+            listeners.forEach((cb) => cb(data))
+        }
+
         if (data.type === "scan_result") {
             listeners.forEach((cb) => cb(data))
         }
@@ -43,6 +47,18 @@ export function disconnectSocket() {
 export function sendMessage(message) {
   if (worker) {
     worker.port.postMessage({ type: "sendMessage", payload: message });
+  }
+}
+
+export function sendJoinRoom(payload) {
+  if (worker) {
+    worker.port.postMessage({ type: "join_room", payload });
+  }
+}
+
+export function sendPingSignal() {
+  if (worker) {
+    worker.port.postMessage({ type: "ping" });
   }
 }
 
